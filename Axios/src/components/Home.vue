@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-    <div  class="container">
-      <div class="header" style="margin-top: 10px">
+    <div v-if="AuthLogin" class="container">
+      <div  class="header" style="margin-top: 10px">
         <h1 style="margin-left: 10px">Danh sách {{btn}} </h1>
         <div>
               <router-link 
@@ -10,11 +10,11 @@
                 class="fadeIn btn btn-success mr-2"
                 to="/admin">Xem thông tin cá nhân</router-link>
                 
-            <router-link 
-                tag="button"
+            <button 
                 style="margin-right: 10px" 
                 class="fadeIn btn btn-danger mr-2"
-                to="/">Logout</router-link>            
+                @click="logOut"
+               >Logout</button>            
 
         </div>
       </div>
@@ -55,8 +55,8 @@
           </table>
       </div>  
 
-      <button @click="getNew" class="btn btn-success" >Làm mới danh sách</button>
-      <button @click="addNewItem" class="btn btn-warning">Thêm mới danh sách</button>
+      <button v-if ="!flagVerify" @click="getNew" class="btn btn-success" >Làm mới danh sách</button>
+      <button v-if ="!flagVerify" @click="addNewItem" class="btn btn-warning">Thêm mới danh sách</button>
 
       <div  v-if="flagAdd" class="container">
         <br />
@@ -145,10 +145,10 @@
         <br />
       </div>
 
-      <div v-if="flagVerify" style="margin-top:20px;margin-left:40px">
-          <p class="error"  >Bạn đã đăng ký thành công</p>
-          <button  @click="verifyAdd" class="btn btn-success" >Ấn vào đây để xác thực Email</button>
-          <button  @click="back" class="btn btn-warning" >Trở về</button>
+      <div v-if="flagVerify" style="margin-top:100px;margin-left:40%">
+          <h3>Bạn đã đăng ký thành công</h3>
+          <button  @click="verifyAdd" class="btn btn-info" >Ấn vào đây để xác thực Email</button>
+          <button  @click="back" class="btn btn-danger" >Trở về</button>
       </div>
     </div>
 
@@ -163,7 +163,7 @@ export default {
   data () {
     return {
       AuthStr: null,
-
+      AuthLogin : false,
       flagVerify : false,
       admins: null,
       users: null,
@@ -190,7 +190,11 @@ export default {
     }
   },
   methods: {
-
+    logOut(){
+      this.$router.push("/")
+      sessionStorage.setItem('loginVerify', false)
+      this.AuthLogin = false
+    },
     addNewItem(){
       this.flagVerify = false
       this.flagAdd = true
@@ -342,7 +346,7 @@ export default {
             this.flagAdd = false
           })
           .catch(error => {
-            alert("Username đã tồn tại, mời nhập usernam mới")
+            alert("Username hoặc email đã tồn tại. ")
           })
       }else{
         alert("Bạn hãy nhập theo yêu cầu.")
@@ -401,6 +405,12 @@ export default {
     },
   },
   mounted () {
+    if (sessionStorage.getItem('loginVerify') == "true") {
+      this.AuthLogin = true;
+    }else{
+      this.AuthLogin = false;
+    }
+    console.log(typeof this.AuthLogin)
     this.AuthStr = 'JWT ' + sessionStorage.getItem('token');
     axios
       .get(this.url + 'admins')

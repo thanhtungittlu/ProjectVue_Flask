@@ -210,7 +210,7 @@ export default {
                 this.$router.push("/")
             })
             .catch((error) =>{
-                alert("Username đã được đăng ký, mời nhập lại.")
+                alert("Username hoặc email đã được đăng ký.")
             })     
       }else{
         alert("Nhập sai yêu cầu, mời nhập lại.")

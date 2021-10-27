@@ -47,7 +47,7 @@ class User(Resource):
     # @jwt_required()
     def post(self, username):
         if UserModel.find_by_username(username):
-            return {'message': "An user with username '{}' already exists.".format(username)},404
+            return {'message': "An user with username '{}' already exists.".format(username)},400
 
         data = User.parser.parse_args()
         user = UserModel()
@@ -58,6 +58,9 @@ class User(Resource):
         user.phonenumber = data['phonenumber']
         user.position = data['position']        
         
+        if UserModel.find_by_email(user.email):
+            return {'message': "An user with email '{}' already exists.".format(user.email)},400
+
         try:
             user.save_to_db()
         except:

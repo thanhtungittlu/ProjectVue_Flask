@@ -62,6 +62,7 @@ export default {
         .then((response) => {
           sessionStorage.setItem('token', response.data.access_token);
           sessionStorage.setItem('usernameAdmin', this.login_.username);
+          sessionStorage.setItem('loginVerify', true);
           this.$router.push("/home")
         })
         .catch(error => alert(error)) 

@@ -46,7 +46,7 @@ class Admin(Resource):
 
     def post(self, username):
         if AdminModel.find_by_username(username):
-            return {'message': "An admin with username '{}' already exists.".format(username)},404
+            return {'message': "An admin with username '{}' already exists.".format(username)},400
 
         data = Admin.parser.parse_args()
         admin = AdminModel()
@@ -56,6 +56,9 @@ class Admin(Resource):
         admin.email = data['email']
         admin.phonenumber = data['phonenumber']
         admin.position = data['position']
+
+        if AdminModel.find_by_email(admin.email):
+            return {'message': "An admin with email '{}' already exists.".format(admin.email)},400
 
         try:
             admin.save_to_db()
