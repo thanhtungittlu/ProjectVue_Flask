@@ -67,84 +67,72 @@
           
           <div v-if="!changeEdit" class="head">
             <h6 style="margin-right:12px; margin-bottom:6px">Fullname</h6>
-            <h6 style="margin-bottom:6px" class="error" v-if="error.isFullname"> (*)</h6>
+            <h6 style="margin-bottom:6h6x" class="error" >(*)</h6>
           </div>
           <input
             v-if="!changeEdit"
             class="mb-3"
             style=""
             placeholder="Lê Thanh Tùng"
-            @blur="blurFullname"
-            @input="inputFullname"
             v-model="fullname"
             type="text"/>
 
 
           <div v-if="!changeEdit" class="head">
             <h6 style="margin-right:12px; margin-bottom:6px">Username</h6>
-            <h6 style="margin-bottom:6px" class="error" v-if="error.isUsername"> (*)</h6>
+            <h6 style="margin-bottom:6px" class="error" > (*)</h6>
           </div>
           <input
             v-if="!changeEdit"
             class="mb-3"
             style=""
             placeholder="tunglt"
-            @blur="blurUsername"
-            @input="inputUsername"
             v-model="username"
             type="text"/>
 
 
           <div class="head">
             <h6 style="margin-right:12px; margin-bottom:6px">Password</h6>
-            <h6 style="margin-bottom:6px" class="error" v-if="error.isPassword"> (*)</h6>
+            <h6 style="margin-bottom:6px" class="error" > (*)</h6>
           </div>
           <input
             class="mb-3"
             style=""
-            placeholder="khongcopass"
-            @blur="blurPassword"
-            @input="inputPassword"
+            placeholder="matkhau@994"
             v-model="password"
             type="password"/>
 
           <div class="head">
             <h6 style="margin-right:12px; margin-bottom:6px">Email</h6>
-            <h6 style="margin-bottom:6px" class="error" v-if="error.isEmail"> (*)</h6>
+            <h6 style="margin-bottom:6px" class="error" > (*)</h6>
           </div>
           <input
             class="mb-3"
             style=""
             placeholder="99lethanhtung@gmail.com"
-            @blur="blurEmail"
-            @input="inputEmail"
             v-model="email"
             type="text"/>
 
           <div class="head">
             <h6 style="margin-right:12px; margin-bottom:6px">Phonenumber</h6>
-            <h6 style="margin-bottom:6px" class="error" v-if="error.isPhonenumber"> (*)</h6>
+            <h6 style="margin-bottom:6px" class="error" > (*)</h6>
           </div>
           <input
             class="mb-3"
             style=""
             placeholder="0364959199"
-            @blur="blurPhonenumber"
-            @input="inputPhonenumber"
             v-model="phonenumber"
             type="text"/>
 
 
           <div class="head">
             <h6 style="margin-right:12px; margin-bottom:6px">Position</h6>
-            <h6 style="margin-bottom:6px" class="error" v-if="error.isPosition"> (*)</h6>
+            <h6 style="margin-bottom:6px" class="error" > (*)</h6>
           </div>
           <input
             class="mb-3"
             style=""
             placeholder="Intern"
-            @blur="blurPosition"
-            @input="inputPosition"
             v-model="position"
             type="text"/>
 
@@ -177,16 +165,6 @@ export default {
       AuthStr: null,
 
       flagVerify : false,
-
-      error: {
-        isFullname: false,
-        isUsername: false,
-        isPassword: false,
-        isEmail: false,
-        isPhonenumber: false,
-        isPosition: false,
-      },
-
       admins: null,
       users: null,
       btn: "User",
@@ -212,58 +190,6 @@ export default {
     }
   },
   methods: {
-    blurFullname(e) {
-      if (e.target.value.trim() == "") {
-        this.error.isFullname = true; 
-      }
-    },
-    inputFullname() {
-      this.error.isFullname = false;
-    },
-    blurUsername(e) {
-      if (e.target.value.trim() == "") {
-        this.error.isUsername = true;
-      }
-    },
-    inputUsername() {
-      this.error.isUsername = false;
-    },
-
-    blurPassword(e) {
-      if (e.target.value.trim() == "") {
-        this.error.isPassword = true;
-      }
-    },
-    inputPassword() {
-      this.error.isPassword = false;
-    },
-
-    blurEmail(e) {
-      if (e.target.value.trim() == "") {
-        this.error.isEmail = true;
-      }
-    },
-    inputEmail() {
-      this.error.isEmail = false;
-    },
-
-    blurPhonenumber(e) {
-      if (e.target.value.trim() == "") {
-        this.error.isPhonenumber = true;
-      }
-    },
-    inputPhonenumber() {
-      this.error.isPhonenumber = false;
-    },
-
-    blurPosition(e) {
-      if (e.target.value.trim() == "") {
-        this.error.isPosition = true;
-      }
-    },
-    inputPosition() {
-      this.error.isPosition = false;
-    },
 
     addNewItem(){
       this.flagVerify = false
@@ -301,12 +227,6 @@ export default {
                 this.flagVerify = false
             })
             .catch(error => console.log(error)) 
-    },
-    checkInput(){
-      if (this.error.isFullname == false && this.error.isUsername == false && this.error.isPassword == false && this.error.isEmail == false && this.error.isPhonenumber == false && this.error.isPosition == false ){
-        return false
-      }
-      return true
     },
     removeAscent (str) {
       if (str === null || str === undefined) return str;
@@ -368,7 +288,17 @@ export default {
         return false // Không có lỗi
       }
     },
-
+    checkErrorInput(){
+      if (this.checkErrorFullname() == false && 
+          this.checkErrorUsername() == false && 
+          this.checkErrorPassword() == false && 
+          this.checkErrorEmail() == false &&  
+          this.checkErrorPhonenumber() == false && 
+          this.checkErrorPosition() == false ){
+        return false // tất cả không có lỗi thì trả về không lỗi
+      }
+      return true
+    },
     getNew(){
         this.btn = "User"
         axios
@@ -387,44 +317,36 @@ export default {
       this.email = ""
       this.phonenumber = "" 
       this.position = ""
-      this.error.isFullname = false;
-      this.error.isUsername = false;
-      this.error.isPassword = false;
-      this.error.isEmail = false;
-      this.error.isPhonenumber = false;
-      this.error.isPosition = false;
     },
 
     submit(){
-      
-      
-      // if (this.checkInput() == false) {
-      //   this.add_.fullname = this.fullname
-      //   this.add_.username = this.username
-      //   this.add_.password = this.password
-      //   this.add_.email = this.email
-      //   this.add_.phonenumber = this.phonenumber
-      //   this.add_.position = this.position
+      if (this.checkErrorInput() == false) {
+        this.add_.fullname = this.fullname
+        this.add_.username = this.username
+        this.add_.password = this.password
+        this.add_.email = this.email
+        this.add_.phonenumber = this.phonenumber
+        this.add_.position = this.position
     
-      //   axios
-      //     .post(this.url + "user/" + this.username,this.add_,{ 'headers': { 'Authorization': this.AuthStr } })
-      //     .then((response) => {
-      //       axios
-      //         .get(this.url + "users",{ 'headers': { 'Authorization': this.AuthStr }})
-      //         .then((response) => {
-      //           this.users = response.data
-      //           sessionStorage.setItem('uuid', this.users.users[this.users.users.length-1].uuid)
-      //         })
-      //         .catch(error => alert("getall",error))
-      //       this.flagVerify = true   
-      //       this.flagAdd = false
-      //     })
-      //     .catch(error => {
-      //       alert("Username đã tồn tại, mời nhập usernam mới")
-      //     })
-      // }else{
-      //   alert("Please enter your text")
-      // }
+        axios
+          .post(this.url + "user/" + this.username,this.add_,{ 'headers': { 'Authorization': this.AuthStr } })
+          .then((response) => {
+            axios
+              .get(this.url + "users",{ 'headers': { 'Authorization': this.AuthStr }})
+              .then((response) => {
+                this.users = response.data
+                sessionStorage.setItem('uuid', this.users.users[this.users.users.length-1].uuid)
+              })
+              .catch(error => alert("getall",error))
+            this.flagVerify = true   
+            this.flagAdd = false
+          })
+          .catch(error => {
+            alert("Username đã tồn tại, mời nhập usernam mới")
+          })
+      }else{
+        alert("Bạn hãy nhập theo yêu cầu.")
+      }
     },
     remove(dataRemove){ 
       axios
@@ -452,7 +374,7 @@ export default {
     },
     success_change(){
     
-      if (this.checkInput() == false) {
+      if (this.checkErrorInput() == false) {
         this.add_.fullname = this.fullname
         this.add_.username = this.username
         this.add_.password = this.password

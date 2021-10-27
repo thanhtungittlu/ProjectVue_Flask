@@ -7,85 +7,73 @@
         <div class="row my-row">
           <div v-if="!changeEdit" class="head">
             <h6 style="margin-right:12px; margin-bottom:6px">Fullname</h6>
-            <h6 style="margin-bottom:6px" class="error" v-if="error.isFullname"> (*)</h6>
+            <h6 style="margin-bottom:6px" class="error" > (*)</h6>
           </div>
           <input
             v-if="!changeEdit"
             class="mb-3"
             style=""
             placeholder="Lê Thanh Tùng"
-            @blur="blurFullname"
-            @input="inputFullname"
             v-model="fullname"
             type="text"/>
 
 
           <div class="head">
             <h6 style="margin-right:12px; margin-bottom:6px">Username</h6>
-            <h6 style="margin-bottom:6px" class="error" v-if="error.isUsername"> (*)</h6>
+            <h6 style="margin-bottom:6px" class="error"> (*)</h6>
           </div>
           <input
             class="mb-3"
             style=""
             placeholder="tunglt"
-            @blur="blurUsername"
-            @input="inputUsername"
             v-model="username"
             type="text"/>
 
 
           <div class="head">
             <h6 style="margin-right:12px; margin-bottom:6px">Password</h6>
-            <h6 style="margin-bottom:6px" class="error" v-if="error.isPassword"> (*)</h6>
+            <h6 style="margin-bottom:6px" class="error" > (*)</h6>
           </div>
           <input
             class="mb-3"
             style=""
             placeholder="khongcopass"
-            @blur="blurPassword"
-            @input="inputPassword"
             v-model="password"
             type="password"/>
 
 
           <div class="head">
             <h6 style="margin-right:12px; margin-bottom:6px">Email</h6>
-            <h6 style="margin-bottom:6px" class="error" v-if="error.isEmail"> (*)</h6>
+            <h6 style="margin-bottom:6px" class="error" > (*)</h6>
           </div>
           <input
             class="mb-3"
             style=""
             placeholder="99lethanhtung@gmail.com"
-            @blur="blurEmail"
-            @input="inputEmail"
             v-model="email"
             type="text"/>
 
 
           <div class="head">
             <h6 style="margin-right:12px; margin-bottom:6px">Phonenumber</h6>
-            <h6 style="margin-bottom:6px" class="error" v-if="error.isPhonenumber"> (*)</h6>
+            <h6 style="margin-bottom:6px" class="error" > (*)</h6>
           </div>
           <input
             class="mb-3"
             style=""
             placeholder="0364959199"
-            @blur="blurPhonenumber"
-            @input="inputPhonenumber"
             v-model="phonenumber"
             type="text"/>
 
 
           <div class="head">
             <h6 style="margin-right:12px; margin-bottom:6px">Position</h6>
-            <h6 style="margin-bottom:6px" class="error" v-if="error.isPosition"> (*)</h6>
+            <h6 style="margin-bottom:6px" class="error" > (*)</h6>
           </div>
           <input
             class="mb-3"
             style=""
             placeholder="Intern"
-            @blur="blurPosition"
-            @input="inputPosition"
             v-model="position"
             type="text"/>
 
@@ -114,15 +102,6 @@ export default {
   data () {
     return {
       flagVerify : false,
-      error: {
-        isFullname: true,
-        isUsername: true,
-        isPassword: true,
-        isEmail: true,
-        isPhonenumber: true,
-        isPosition: true,
-      },
-
       admins: null,
       add_: {
         "fullname" : "",
@@ -144,67 +123,79 @@ export default {
     }
   },
   methods: {
-    blurFullname(e) {
-      if (e.target.value.trim() == "") {
-        this.error.isFullname = true;
+    removeAscent (str) {
+      if (str === null || str === undefined) return str;
+        str = str.toLowerCase();
+        str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
+        str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
+        str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
+        str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o");
+        str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u");
+        str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
+        str = str.replace(/đ/g, "d");
+        return str;
+    },    
+    checkErrorFullname(){
+      var regexName = /^[a-zA-Z ]{2,}$/g;
+      if(!regexName.test(this.removeAscent(this.fullname))){
+        return true // Có lỗi 
+      }else{
+        return false // Không có lỗi
       }
     },
-    inputFullname() {
-      this.error.isFullname = false;
-    },
-    blurUsername(e) {
-      if (e.target.value.trim() == "") {
-        this.error.isUsername = true;
-      }
-    },
-    inputUsername() {
-      this.error.isUsername = false;
-    },
-
-    blurPassword(e) {
-      if (e.target.value.trim() == "") {
-        this.error.isPassword = true;
-      }
-    },
-    inputPassword() {
-      this.error.isPassword = false;
-    },
-
-    blurEmail(e) {
-      if (e.target.value.trim() == "") {
-        this.error.isEmail = true;
-      }
-    },
-    inputEmail() {
-      this.error.isEmail = false;
-    },
-
-    blurPhonenumber(e) {
-      if (e.target.value.trim() == "") {
-        this.error.isPhonenumber = true;
-      }
-    },
-    inputPhonenumber() {
-      this.error.isPhonenumber = false;
-    },
-
-    blurPosition(e) {
-      if (e.target.value.trim() == "") {
-        this.error.isPosition = true;
-      }
-    },
-    inputPosition() {
-      this.error.isPosition = false;
-    },
-    checkInput(){
-      if (this.error.isFullname == false && this.error.isUsername == false && this.error.isPassword == false && this.error.isEmail == false && this.error.isPhonenumber == false && this.error.isPosition == false ){
+    checkErrorUsername(){
+      var regexName = /^[a-zA-Z0-9_]{4,}[a-zA-Z]+[0-9]*$/ // a-z, gồm chữ số, có dấu gạch dưới, nhưng không được để cuối cùng, ít nhât 5 ký tự
+      if (!regexName.test(this.username)){
+        return true
+      }else{
         return false
+      }
+    },
+    checkErrorPassword(){
+      var regexName = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/ // Ít nhất 6 ký tự, có thể có ký tự đặc biệt
+      if (!regexName.test(this.password)){
+        return true
+      }else{
+        return false
+      }
+    },
+    checkErrorEmail(){
+      var regexName = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/ // Ít nhất 6 ký tự, có thể có ký tự đặc biệt
+      if (!regexName.test(this.email)){
+        return true
+      }else{
+        return false
+      }
+    },
+    checkErrorPhonenumber(){
+      var regexName = /^[0-9]{8,11}$/;
+      if(!regexName.test(this.removeAscent(this.phonenumber))){
+        return true // Có lỗi 
+      }else{
+        return false // Không có lỗi
+      }
+    },
+    checkErrorPosition(){
+      var regexName = /^[a-zA-Z ]{2,}$/g;
+      if(!regexName.test(this.removeAscent(this.position))){
+        return true // Có lỗi 
+      }else{
+        return false // Không có lỗi
+      }
+    },
+    checkErrorInput(){
+      if (this.checkErrorFullname() == false && 
+          this.checkErrorUsername() == false && 
+          this.checkErrorPassword() == false && 
+          this.checkErrorEmail() == false &&  
+          this.checkErrorPhonenumber() == false && 
+          this.checkErrorPosition() == false ){
+        return false // tất cả không có lỗi thì trả về không lỗi
       }
       return true
     },
     submit(){
-
-      if (this.checkInput() == false) {
+      if (this.checkErrorInput() == false) {
         
         this.add_.fullname = this.fullname
         this.add_.username = this.username
@@ -222,7 +213,7 @@ export default {
                 alert("Username đã được đăng ký, mời nhập lại.")
             })     
       }else{
-        alert("Please enter your text")
+        alert("Nhập sai yêu cầu, mời nhập lại.")
       }
     },
   },
