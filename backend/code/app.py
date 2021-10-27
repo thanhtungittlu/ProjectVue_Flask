@@ -27,7 +27,7 @@ def create_table():
 app.config['JWT_AUTH_URL_RULE'] = '/login' #Thay /auth = /login
 jwt = JWT(app, authenticate, identity) # /auth
 
-api.add_resource(User, '/user/<string:fullname>')
+api.add_resource(User, '/user/<string:username>')
 api.add_resource(UserList, '/users')
 api.add_resource(Admin, '/admin/<string:username>')
 api.add_resource(AdminList, '/admins')
@@ -41,4 +41,4 @@ api.add_resource(UserMail, '/email/<string:uuid>')
 if __name__ == '__main__':
     from db import db
     db.init_app(app)
-    app.run(debug=True)  # important to mention debug=True
+    app.run(host='0.0.0.0', debug=True)  # important to mention debug=True

@@ -46,7 +46,7 @@ class Admin(Resource):
 
     def post(self, username):
         if AdminModel.find_by_username(username):
-            return {'message': "An admin with username '{}' already exists.".format(username)}
+            return {'message': "An admin with username '{}' already exists.".format(username)},404
 
         data = Admin.parser.parse_args()
         admin = AdminModel()

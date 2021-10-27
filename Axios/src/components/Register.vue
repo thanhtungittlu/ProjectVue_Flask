@@ -7,7 +7,7 @@
         <div class="row my-row">
           <div v-if="!changeEdit" class="head">
             <h6 style="margin-right:12px; margin-bottom:6px">Fullname</h6>
-            <h6 style="margin-bottom:6px" class="error" v-if="error.isFullname"> Please enter your fullname</h6>
+            <h6 style="margin-bottom:6px" class="error" v-if="error.isFullname"> (*)</h6>
           </div>
           <input
             v-if="!changeEdit"
@@ -22,7 +22,7 @@
 
           <div class="head">
             <h6 style="margin-right:12px; margin-bottom:6px">Username</h6>
-            <h6 style="margin-bottom:6px" class="error" v-if="error.isUsername"> Please enter your username</h6>
+            <h6 style="margin-bottom:6px" class="error" v-if="error.isUsername"> (*)</h6>
           </div>
           <input
             class="mb-3"
@@ -36,7 +36,7 @@
 
           <div class="head">
             <h6 style="margin-right:12px; margin-bottom:6px">Password</h6>
-            <h6 style="margin-bottom:6px" class="error" v-if="error.isPassword"> Please enter your password</h6>
+            <h6 style="margin-bottom:6px" class="error" v-if="error.isPassword"> (*)</h6>
           </div>
           <input
             class="mb-3"
@@ -50,7 +50,7 @@
 
           <div class="head">
             <h6 style="margin-right:12px; margin-bottom:6px">Email</h6>
-            <h6 style="margin-bottom:6px" class="error" v-if="error.isEmail"> Please enter your email</h6>
+            <h6 style="margin-bottom:6px" class="error" v-if="error.isEmail"> (*)</h6>
           </div>
           <input
             class="mb-3"
@@ -64,7 +64,7 @@
 
           <div class="head">
             <h6 style="margin-right:12px; margin-bottom:6px">Phonenumber</h6>
-            <h6 style="margin-bottom:6px" class="error" v-if="error.isPhonenumber"> Please enter your phonenumber</h6>
+            <h6 style="margin-bottom:6px" class="error" v-if="error.isPhonenumber"> (*)</h6>
           </div>
           <input
             class="mb-3"
@@ -78,7 +78,7 @@
 
           <div class="head">
             <h6 style="margin-right:12px; margin-bottom:6px">Position</h6>
-            <h6 style="margin-bottom:6px" class="error" v-if="error.isPosition"> Please enter your position</h6>
+            <h6 style="margin-bottom:6px" class="error" v-if="error.isPosition"> (*)</h6>
           </div>
           <input
             class="mb-3"
@@ -140,7 +140,7 @@ export default {
       email: null,
       phonenumber: null, 
       position: null,
-      url: 'http://127.0.0.1:5000/',
+      url: 'http://192.168.101.122:5000/',
     }
   },
   methods: {
@@ -213,13 +213,13 @@ export default {
         this.add_.phonenumber = this.phonenumber
         this.add_.position = this.position
         axios
-            .post(this.url + "admin/" + this.fullname,this.add_)   
+            .post(this.url + "admin/" + this.username,this.add_)   
             .then((response) => {
                 alert("Thêm admin thành công")
                 this.$router.push("/")
             })
             .catch((error) =>{
-                alert(error)
+                alert("Username đã được đăng ký, mời nhập lại.")
             })     
       }else{
         alert("Please enter your text")

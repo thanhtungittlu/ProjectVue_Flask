@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" @keyup.enter ="login">
 
     <div v-if="flagLogin" class="login wrapper fadeInDown">
       <div id="formContent">
@@ -14,7 +14,7 @@
         <div>
           <input v-model="loginUsername" type="text" class="fadeIn second" name="login" required placeholder="Username">
           <input v-model="loginPassword" type="password" class="fadeIn third" name="login" required placeholder="password">
-          <button class="fadeIn btn btn-primary mb-3 mt-2" @click="login">Login</button>
+          <button class="fadeIn btn btn-primary mb-3 mt-2"  @click="login"  >Login</button>
         </div>
 
         <!-- Remind Passowrd -->
@@ -48,7 +48,7 @@ export default {
         "username" : "",
         "password" : "",
       },
-      url: 'http://127.0.0.1:5000/',
+      url: 'http://192.168.101.122:5000/',
     }
   },
   methods: {

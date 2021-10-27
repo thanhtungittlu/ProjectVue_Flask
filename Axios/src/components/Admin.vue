@@ -129,14 +129,21 @@ export default {
   data () {
     return {
       admin: null,
-      url: 'http://127.0.0.1:5000/',
+      url: 'http://192.168.101.122:5000/',
       flagChange: false,
       fullname: null,
       password: null,
       email: null,
       phonenumber: null, 
       position: null,
-
+      error: {
+        isFullname: false,
+        isUsername: false,
+        isPassword: false,
+        isEmail: false,
+        isPhonenumber: false,
+        isPosition: false,
+      },
     }
   },
   methods: {
@@ -184,6 +191,12 @@ export default {
     inputPosition() {
       this.error.isPosition = false;
     },
+    checkInput(){
+      if (this.error.isFullname == false && this.error.isUsername == false && this.error.isPassword == false && this.error.isEmail == false && this.error.isPhonenumber == false && this.error.isPosition == false ){
+        return false
+      }
+      return true
+    },
     edit(){
         this.flagChange = true
         this.fullname = this.admin.fullname;
@@ -193,6 +206,7 @@ export default {
         this.position = this.admin.position;
     },
     success_change(){
+        if (this.checkInput() == false){
         this.admin.fullname = this.fullname
         this.admin.password = this.password
         this.admin.email = this.email
@@ -205,7 +219,9 @@ export default {
                 this.flagChange = false
             })
             .catch(error => alert(error))
-
+        }else{
+            alert("Please enter your text")
+        }
     },
     back(){
       this.flagChange = false

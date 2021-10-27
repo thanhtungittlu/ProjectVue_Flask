@@ -19,7 +19,7 @@ class UserMail(Resource):
 
 
         This is your account confirmation mail.
-        Click to link: """ + "http://127.0.0.1:5000/verify/" + user.uuid
+        Click to link: """ + "http://192.168.101.122:5000/verify/" + user.uuid
         context = ssl.create_default_context()
         with smtplib.SMTP_SSL(smtp_server, port, context=context) as server:
             server.login(sender_email, password)

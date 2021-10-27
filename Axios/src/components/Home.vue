@@ -1,19 +1,21 @@
 <template>
   <div id="app">
-    <div  class="main">
-      <div class="header">
+    <div  class="container">
+      <div class="header" style="margin-top: 10px">
         <h1 style="margin-left: 10px">Danh sách {{btn}} </h1>
         <div>
+              <router-link 
+                tag="button"
+                style="margin-right: 10px" 
+                class="fadeIn btn btn-success mr-2"
+                to="/admin">Xem thông tin cá nhân</router-link>
+                
             <router-link 
                 tag="button"
                 style="margin-right: 10px" 
                 class="fadeIn btn btn-danger mr-2"
                 to="/">Logout</router-link>            
-            <router-link 
-                tag="button"
-                style="margin-right: 10px" 
-                class="fadeIn btn btn-success mr-2"
-                to="/admin">Xem thông tin cá nhân</router-link>
+
         </div>
       </div>
       <hr>
@@ -53,8 +55,8 @@
           </table>
       </div>  
 
-      <button @click="getNew" class="btn btn-success" >Làm mới danh sách.</button>
-      <button @click="addNewItem" class="btn btn-warning">Thêm mới danh sách.</button>
+      <button @click="getNew" class="btn btn-success" >Làm mới danh sách</button>
+      <button @click="addNewItem" class="btn btn-warning">Thêm mới danh sách</button>
 
       <div  v-if="flagAdd" class="container">
         <br />
@@ -65,7 +67,7 @@
           
           <div v-if="!changeEdit" class="head">
             <h6 style="margin-right:12px; margin-bottom:6px">Fullname</h6>
-            <h6 style="margin-bottom:6px" class="error" v-if="error.isFullname"> Please enter your fullname</h6>
+            <h6 style="margin-bottom:6px" class="error" v-if="error.isFullname"> (*)</h6>
           </div>
           <input
             v-if="!changeEdit"
@@ -78,11 +80,12 @@
             type="text"/>
 
 
-          <div class="head">
+          <div v-if="!changeEdit" class="head">
             <h6 style="margin-right:12px; margin-bottom:6px">Username</h6>
-            <h6 style="margin-bottom:6px" class="error" v-if="error.isUsername"> Please enter your username</h6>
+            <h6 style="margin-bottom:6px" class="error" v-if="error.isUsername"> (*)</h6>
           </div>
           <input
+            v-if="!changeEdit"
             class="mb-3"
             style=""
             placeholder="tunglt"
@@ -94,7 +97,7 @@
 
           <div class="head">
             <h6 style="margin-right:12px; margin-bottom:6px">Password</h6>
-            <h6 style="margin-bottom:6px" class="error" v-if="error.isPassword"> Please enter your password</h6>
+            <h6 style="margin-bottom:6px" class="error" v-if="error.isPassword"> (*)</h6>
           </div>
           <input
             class="mb-3"
@@ -105,10 +108,9 @@
             v-model="password"
             type="password"/>
 
-
           <div class="head">
             <h6 style="margin-right:12px; margin-bottom:6px">Email</h6>
-            <h6 style="margin-bottom:6px" class="error" v-if="error.isEmail"> Please enter your email</h6>
+            <h6 style="margin-bottom:6px" class="error" v-if="error.isEmail"> (*)</h6>
           </div>
           <input
             class="mb-3"
@@ -119,10 +121,9 @@
             v-model="email"
             type="text"/>
 
-
           <div class="head">
             <h6 style="margin-right:12px; margin-bottom:6px">Phonenumber</h6>
-            <h6 style="margin-bottom:6px" class="error" v-if="error.isPhonenumber"> Please enter your phonenumber</h6>
+            <h6 style="margin-bottom:6px" class="error" v-if="error.isPhonenumber"> (*)</h6>
           </div>
           <input
             class="mb-3"
@@ -136,7 +137,7 @@
 
           <div class="head">
             <h6 style="margin-right:12px; margin-bottom:6px">Position</h6>
-            <h6 style="margin-bottom:6px" class="error" v-if="error.isPosition"> Please enter your position</h6>
+            <h6 style="margin-bottom:6px" class="error" v-if="error.isPosition"> (*)</h6>
           </div>
           <input
             class="mb-3"
@@ -179,12 +180,12 @@ export default {
       loginUsername: null,
       loginPassword: null,
       error: {
-        isFullname: true,
-        isUsername: true,
-        isPassword: true,
-        isEmail: true,
-        isPhonenumber: true,
-        isPosition: true,
+        isFullname: false,
+        isUsername: false,
+        isPassword: false,
+        isEmail: false,
+        isPhonenumber: false,
+        isPosition: false,
       },
 
       admins: null,
@@ -211,13 +212,13 @@ export default {
       email: null,
       phonenumber: null, 
       position: null,
-      url: 'http://127.0.0.1:5000/',
+      url: 'http://192.168.101.122:5000/',
     }
   },
   methods: {
     blurFullname(e) {
       if (e.target.value.trim() == "") {
-        this.error.isFullname = true;
+        this.error.isFullname = true; 
       }
     },
     inputFullname() {
@@ -324,7 +325,6 @@ export default {
       }
       return true
     },
-
     getNew(){
         this.btn = "User"
         axios
@@ -343,12 +343,12 @@ export default {
       this.email = ""
       this.phonenumber = "" 
       this.position = ""
-      this.error.isFullname = true;
-      this.error.isUsername = true;
-      this.error.isPassword = true;
-      this.error.isEmail = true;
-      this.error.isPhonenumber = true;
-      this.error.isPosition = true;
+      this.error.isFullname = false;
+      this.error.isUsername = false;
+      this.error.isPassword = false;
+      this.error.isEmail = false;
+      this.error.isPhonenumber = false;
+      this.error.isPosition = false;
     },
 
     submit(){
@@ -361,29 +361,29 @@ export default {
         this.add_.phonenumber = this.phonenumber
         this.add_.position = this.position
     
-          axios
-            .post(this.url + "user/" + this.fullname,this.add_,{ 'headers': { 'Authorization': this.AuthStr } })
-            .then((response) => {
-              axios
-                .get(this.url + "users",{ 'headers': { 'Authorization': this.AuthStr }})
-                .then((response) => {
-                  this.users = response.data
-                  sessionStorage.setItem('uuid', this.users.users[this.users.users.length-1].uuid)
-                })
-                .catch(error => alert("getall",error))
-            })
-            .catch(error => alert(error))
-        
-        this.flagVerify = true   
+        axios
+          .post(this.url + "user/" + this.username,this.add_,{ 'headers': { 'Authorization': this.AuthStr } })
+          .then((response) => {
+            axios
+              .get(this.url + "users",{ 'headers': { 'Authorization': this.AuthStr }})
+              .then((response) => {
+                this.users = response.data
+                sessionStorage.setItem('uuid', this.users.users[this.users.users.length-1].uuid)
+              })
+              .catch(error => alert("getall",error))
+            this.flagVerify = true   
+            this.flagAdd = false
+          })
+          .catch(error => {
+            alert("Username đã tồn tại, mời nhập usernam mới")
+          })
       }else{
         alert("Please enter your text")
       }
-      this.flagAdd = false
-
     },
     remove(dataRemove){ 
       axios
-        .delete(this.url + "user/" + dataRemove.fullname,{ 'headers': { 'Authorization': this.AuthStr }})
+        .delete(this.url + "user/" + dataRemove.username,{ 'headers': { 'Authorization': this.AuthStr }})
         .then((response) => {
           axios
             .get(this.url + "users",{ 'headers': { 'Authorization': this.AuthStr }})
@@ -394,7 +394,7 @@ export default {
         .catch(error => alert(error))
     },
     edit(dataEdit) {
-      
+
       this.flagAdd = true
       this.changeEdit = true
       this.fullname = dataEdit.fullname
@@ -403,28 +403,34 @@ export default {
       this.email = dataEdit.email
       this.phonenumber = dataEdit.phonenumber 
       this.position = dataEdit.position     
+
     },
     success_change(){
-      
-      this.add_.fullname = this.fullname
-      this.add_.username = this.username
-      this.add_.password = this.password
-      this.add_.email = this.email
-      this.add_.phonenumber = this.phonenumber
-      this.add_.position = this.position     
-      axios
-          .put(this.url + "user/" + this.fullname,this.add_,{ 'headers': { 'Authorization': this.AuthStr }})
-          .then((response) => {
-            axios
-              .get(this.url + "users",{ 'headers': { 'Authorization': this.AuthStr }})
-              .then((response) => {
-                this.users = response.data
-              })
-          }) 
-          .catch(error => alert(error))
-      
-      this.resetChange()
-      this.flagAdd = false      
+    
+      if (this.checkInput() == false) {
+        this.add_.fullname = this.fullname
+        this.add_.username = this.username
+        this.add_.password = this.password
+        this.add_.email = this.email
+        this.add_.phonenumber = this.phonenumber
+        this.add_.position = this.position     
+        axios
+            .put(this.url + "user/" + this.username,this.add_,{ 'headers': { 'Authorization': this.AuthStr }})
+            .then((response) => {
+              axios
+                .get(this.url + "users",{ 'headers': { 'Authorization': this.AuthStr }})
+                .then((response) => {
+                  this.users = response.data
+                })
+            }) 
+            .catch(error => alert(error))
+        
+        this.resetChange()
+        this.flagAdd = false 
+      }else{
+        alert("Please enter your text")
+      }
+                  
     },
   },
   mounted () {

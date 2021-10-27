@@ -37,21 +37,21 @@ class User(Resource):
         help="This field cannot be left blank!"
     )
 
-    @jwt_required()
-    def get(self, fullname):
-        user = UserModel.find_by_fullname(fullname)
+    # @jwt_required()
+    def get(self, username):
+        user = UserModel.find_by_username(username)
         if user:
             return user.json()
         return {'message': 'User not found'},404
 
-    @jwt_required()
-    def post(self, fullname):
-        if UserModel.find_by_fullname(fullname):
-            return {'message': "An user with fullname '{}' already exists.".format(fullname)}
+    # @jwt_required()
+    def post(self, username):
+        if UserModel.find_by_username(username):
+            return {'message': "An user with username '{}' already exists.".format(username)},404
 
         data = User.parser.parse_args()
         user = UserModel()
-        user.fullname = fullname
+        user.fullname = data['fullname']
         user.username = data['username']
         user.password = data['password']
         user.email = data['email']
@@ -65,20 +65,21 @@ class User(Resource):
 
         return user.json(),201
 
-    @jwt_required()
-    def put(self, fullname):
+    # @jwt_required()
+    def put(self, username):
         data = User.parser.parse_args()
-        user = UserModel.find_by_fullname(fullname)
+        user = UserModel.find_by_username(username)
         
         if user is None: #nếu không có thì thêm vào
             user = UserModel()
-            user.fullname = fullname
+            user.fullname = data['fullname']
             user.username = data['username']
             user.password = data['password']
             user.email = data['email']
             user.phonenumber = data['phonenumber']
             user.position = data['position']
         else: # Ngược lại sẽ update
+            user.fullname = data['fullname']
             user.username = data['username']
             user.password = data['password']
             user.email = data['email']
@@ -87,16 +88,16 @@ class User(Resource):
         user.save_to_db()
         return user.json()
 
-    @jwt_required()
-    def delete(self, fullname):
-        user = UserModel.find_by_fullname(fullname)
+    # @jwt_required()
+    def delete(self, username):
+        user = UserModel.find_by_username(username)
         if user:
             user.delete_from_db()
             return {'message': 'User deleted'}
         return {'message': 'User not found'}
         
 class UserList(Resource):
-    @jwt_required()
+    # @jwt_required()
     def get(self):
         return {'users': [user.json() for user in UserModel.query.all()]}
 
