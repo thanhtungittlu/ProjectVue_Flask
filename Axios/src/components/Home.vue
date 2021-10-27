@@ -175,10 +175,9 @@ export default {
   data () {
     return {
       AuthStr: null,
-      flagLogin : true,
+
       flagVerify : false,
-      loginUsername: null,
-      loginPassword: null,
+
       error: {
         isFullname: false,
         isUsername: false,
@@ -201,10 +200,7 @@ export default {
         "phonenumber" :"",
         "position":"",
       },
-      login_ :{
-        "username" : "",
-        "password" : "",
-      },
+
       flagAdd: false,
       fullname: null,
       username: null,
@@ -268,20 +264,7 @@ export default {
     inputPosition() {
       this.error.isPosition = false;
     },
-    login(){
-      
-      this.login_.username = this.loginUsername;
-      this.login_.password = this.loginPassword;
-      
-      axios
-        .post(this.url + "login",this.login_)
-        .then((response) => {
-          sessionStorage.setItem('token', response.data.access_token);
-          this.flagLogin = false
-        })
-        .catch(error => alert(error)) 
-      
-    },
+
     addNewItem(){
       this.flagVerify = false
       this.flagAdd = true
@@ -325,6 +308,67 @@ export default {
       }
       return true
     },
+    removeAscent (str) {
+      if (str === null || str === undefined) return str;
+        str = str.toLowerCase();
+        str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
+        str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
+        str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
+        str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o");
+        str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u");
+        str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
+        str = str.replace(/đ/g, "d");
+        return str;
+    },    
+    checkErrorFullname(){
+      var regexName = /^[a-zA-Z ]{2,}$/g;
+      if(!regexName.test(this.removeAscent(this.fullname))){
+        return true // Có lỗi 
+      }else{
+        return false // Không có lỗi
+      }
+    },
+    checkErrorUsername(){
+      var regexName = /^[a-zA-Z0-9_]{4,}[a-zA-Z]+[0-9]*$/ // a-z, gồm chữ số, có dấu gạch dưới, nhưng không được để cuối cùng, ít nhât 5 ký tự
+      if (!regexName.test(this.username)){
+        return true
+      }else{
+        return false
+      }
+    },
+    checkErrorPassword(){
+      var regexName = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/ // Ít nhất 6 ký tự, có thể có ký tự đặc biệt
+      if (!regexName.test(this.password)){
+        return true
+      }else{
+        return false
+      }
+    },
+    checkErrorEmail(){
+      var regexName = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/ // Ít nhất 6 ký tự, có thể có ký tự đặc biệt
+      if (!regexName.test(this.email)){
+        return true
+      }else{
+        return false
+      }
+    },
+    checkErrorPhonenumber(){
+      var regexName = /^[0-9]{8,11}$/;
+      if(!regexName.test(this.removeAscent(this.phonenumber))){
+        return true // Có lỗi 
+      }else{
+        return false // Không có lỗi
+      }
+    },
+    checkErrorPosition(){
+      var regexName = /^[a-zA-Z ]{2,}$/g;
+      if(!regexName.test(this.removeAscent(this.position))){
+        return true // Có lỗi 
+      }else{
+        return false // Không có lỗi
+      }
+    },
+
     getNew(){
         this.btn = "User"
         axios
@@ -352,34 +396,35 @@ export default {
     },
 
     submit(){
-
-      if (this.checkInput() == false) {
-        this.add_.fullname = this.fullname
-        this.add_.username = this.username
-        this.add_.password = this.password
-        this.add_.email = this.email
-        this.add_.phonenumber = this.phonenumber
-        this.add_.position = this.position
+      
+      
+      // if (this.checkInput() == false) {
+      //   this.add_.fullname = this.fullname
+      //   this.add_.username = this.username
+      //   this.add_.password = this.password
+      //   this.add_.email = this.email
+      //   this.add_.phonenumber = this.phonenumber
+      //   this.add_.position = this.position
     
-        axios
-          .post(this.url + "user/" + this.username,this.add_,{ 'headers': { 'Authorization': this.AuthStr } })
-          .then((response) => {
-            axios
-              .get(this.url + "users",{ 'headers': { 'Authorization': this.AuthStr }})
-              .then((response) => {
-                this.users = response.data
-                sessionStorage.setItem('uuid', this.users.users[this.users.users.length-1].uuid)
-              })
-              .catch(error => alert("getall",error))
-            this.flagVerify = true   
-            this.flagAdd = false
-          })
-          .catch(error => {
-            alert("Username đã tồn tại, mời nhập usernam mới")
-          })
-      }else{
-        alert("Please enter your text")
-      }
+      //   axios
+      //     .post(this.url + "user/" + this.username,this.add_,{ 'headers': { 'Authorization': this.AuthStr } })
+      //     .then((response) => {
+      //       axios
+      //         .get(this.url + "users",{ 'headers': { 'Authorization': this.AuthStr }})
+      //         .then((response) => {
+      //           this.users = response.data
+      //           sessionStorage.setItem('uuid', this.users.users[this.users.users.length-1].uuid)
+      //         })
+      //         .catch(error => alert("getall",error))
+      //       this.flagVerify = true   
+      //       this.flagAdd = false
+      //     })
+      //     .catch(error => {
+      //       alert("Username đã tồn tại, mời nhập usernam mới")
+      //     })
+      // }else{
+      //   alert("Please enter your text")
+      // }
     },
     remove(dataRemove){ 
       axios
