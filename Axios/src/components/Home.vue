@@ -73,7 +73,7 @@
             v-if="!changeEdit"
             class="mb-3"
             style=""
-            placeholder="Lê Thanh Tùng"
+            placeholder="Please enter your fullname"
             v-model="fullname"
             type="text"/>
 
@@ -86,7 +86,7 @@
             v-if="!changeEdit"
             class="mb-3"
             style=""
-            placeholder="tunglt"
+            placeholder="Please enter your username"
             v-model="username"
             type="text"/>
 
@@ -98,7 +98,7 @@
           <input
             class="mb-3"
             style=""
-            placeholder="matkhau@994"
+            placeholder="Please enter your password"
             v-model="password"
             type="password"/>
 
@@ -109,7 +109,7 @@
           <input
             class="mb-3"
             style=""
-            placeholder="99lethanhtung@gmail.com"
+            placeholder="Please enter your email"
             v-model="email"
             type="text"/>
 
@@ -120,7 +120,7 @@
           <input
             class="mb-3"
             style=""
-            placeholder="0364959199"
+            placeholder="Please enter your phonenumber"
             v-model="phonenumber"
             type="text"/>
 
@@ -132,7 +132,7 @@
           <input
             class="mb-3"
             style=""
-            placeholder="Intern"
+            placeholder="Please enter your position"
             v-model="position"
             type="text"/>
 
@@ -186,6 +186,7 @@ export default {
       email: null,
       phonenumber: null, 
       position: null,
+      uuid:null,
       url: 'http://192.168.101.122:5000/',
     }
   },
@@ -205,6 +206,14 @@ export default {
       this.resetChange()
       this.flagAdd = false    
       this.flagVerify = false
+    },
+    removeSpace(){
+      this.fullname = this.fullname.trim()
+      this.username = this.username.trim()
+      
+      this.email = this.email.trim()
+      this.phonenumber = this.phonenumber.trim().replace(/\s/g, '')
+      this.position = this.position.trim()
     },
     verify(user){
       if (user.verify == true) {
@@ -246,7 +255,7 @@ export default {
     },    
     checkErrorFullname(){
       var regexName = /^[a-zA-Z ]{2,}$/g;
-      if(!regexName.test(this.removeAscent(this.fullname))){
+      if(!regexName.test(this.removeAscent(this.fullname.trim()))){
         return true // Có lỗi 
       }else{
         return false // Không có lỗi
@@ -254,14 +263,14 @@ export default {
     },
     checkErrorUsername(){
       var regexName = /^[a-zA-Z0-9_]{4,}[a-zA-Z]+[0-9]*$/ // a-z, gồm chữ số, có dấu gạch dưới, nhưng không được để cuối cùng, ít nhât 5 ký tự
-      if (!regexName.test(this.username)){
+      if (!regexName.test(this.username.trim())){
         return true
       }else{
         return false
       }
     },
     checkErrorPassword(){
-      var regexName = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/ // Ít nhất 6 ký tự, có thể có ký tự đặc biệt
+      var regexName = /^.{6,}$/
       if (!regexName.test(this.password)){
         return true
       }else{
@@ -270,15 +279,15 @@ export default {
     },
     checkErrorEmail(){
       var regexName = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/ // Ít nhất 6 ký tự, có thể có ký tự đặc biệt
-      if (!regexName.test(this.email)){
+      if (!regexName.test(this.email.trim())){
         return true
       }else{
         return false
       }
     },
     checkErrorPhonenumber(){
-      var regexName = /^[0-9]{8,11}$/;
-      if(!regexName.test(this.removeAscent(this.phonenumber))){
+      var regexName = /^[0-9]{4,11}$/;
+      if(!regexName.test(this.removeAscent(this.phonenumber.replace(/\s/g, '')))){
         return true // Có lỗi 
       }else{
         return false // Không có lỗi
@@ -286,7 +295,7 @@ export default {
     },
     checkErrorPosition(){
       var regexName = /^[a-zA-Z ]{2,}$/g;
-      if(!regexName.test(this.removeAscent(this.position))){
+      if(!regexName.test(this.removeAscent(this.position.trim()))){
         return true // Có lỗi 
       }else{
         return false // Không có lỗi
@@ -324,6 +333,7 @@ export default {
     },
 
     submit(){
+      this.removeSpace()
       if (this.checkErrorInput() == false) {
         this.add_.fullname = this.fullname
         this.add_.username = this.username
@@ -349,10 +359,28 @@ export default {
             alert("Username hoặc email đã tồn tại. ")
           })
       }else{
-        alert("Bạn hãy nhập theo yêu cầu.")
+        if (this.checkErrorFullname() == true){
+          alert("Bạn nhập không đúng định dạng fullname")
+        }
+        if (this.checkErrorUsername() == true){
+          alert("Bạn nhập không đúng định dạng username")
+        }
+        if (this.checkErrorPassword() == true){
+          alert("Bạn nhập không đúng định dạng password")
+        }
+        if (this.checkErrorEmail() == true){
+          alert("Bạn nhập không đúng định dạng email")
+        }
+        if (this.checkErrorPhonenumber() == true){
+          alert("Bạn nhập không đúng định dạng phonenumber")
+        }
+        if (this.checkErrorPosition() == true){
+          alert("Bạn nhập không đúng định dạng position")
+        }
       }
     },
     remove(dataRemove){ 
+      
       axios
         .delete(this.url + "user/" + dataRemove.username,{ 'headers': { 'Authorization': this.AuthStr }})
         .then((response) => {
@@ -373,11 +401,11 @@ export default {
       this.password = dataEdit.password
       this.email = dataEdit.email
       this.phonenumber = dataEdit.phonenumber 
-      this.position = dataEdit.position     
-
+      this.position = dataEdit.position
+      this.uuid = dataEdit.uuid 
     },
     success_change(){
-    
+      this.removeSpace()
       if (this.checkErrorInput() == false) {
         this.add_.fullname = this.fullname
         this.add_.username = this.username
@@ -393,13 +421,25 @@ export default {
                 .then((response) => {
                   this.users = response.data
                 })
+                .catch(error => alert("Get usess error",error)) 
+              this.flagAdd =false 
             }) 
-            .catch(error => alert(error))
-        
-        this.resetChange()
-        this.flagAdd = false 
+            .catch(error => {
+              alert("Put user error!",error)   
+            })
       }else{
-        alert("Please enter your text")
+        if (this.checkErrorPassword() == true){
+          alert("Bạn nhập không đúng định dạng password")
+        }
+        if (this.checkErrorEmail() == true){
+          alert("Bạn nhập không đúng định dạng email")
+        }
+        if (this.checkErrorPhonenumber() == true){
+          alert("Bạn nhập không đúng định dạng phonenumber")
+        }
+        if (this.checkErrorPosition() == true){
+          alert("Bạn nhập không đúng định dạng position")
+        }
       }
                   
     },

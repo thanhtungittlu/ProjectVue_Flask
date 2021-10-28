@@ -7,4 +7,4 @@ class UserVerify(Resource):
         user = UserModel.find_by_uuid(uuid)
         user.verify = True
         user.save_to_db()
-        return user.json()
+        return {"message":"Verified"}

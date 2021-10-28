@@ -45,15 +45,15 @@
           <h1 >Chỉnh sửa thông tin</h1>
         <hr />
         <div class="row my-row">
-          <div v-if="!changeEdit" class="head">
+          <div  class="head">
             <h6 style="margin-right:12px; margin-bottom:6px">Fullname</h6>
             <h6 style="margin-bottom:6px" class="error" > (*)</h6>
           </div>
           <input
-            v-if="!changeEdit"
+            
             class="mb-3"
             style=""
-            placeholder="Lê Thanh Tùng"
+            placeholder="Please enter your fullname"
             v-model="fullname"
             type="text"/>
 
@@ -64,7 +64,7 @@
           <input
             class="mb-3"
             style=""
-            placeholder="khongcopass"
+            placeholder="Please enter your password"
             v-model="password"
             type="password"/>
 
@@ -76,7 +76,7 @@
           <input
             class="mb-3"
             style=""
-            placeholder="99lethanhtung@gmail.com"
+            placeholder="Please enter your email"
             v-model="email"
             type="text"/>
 
@@ -88,7 +88,7 @@
           <input
             class="mb-3"
             style=""
-            placeholder="0364959199"
+            placeholder="Please enter your phonenumber"
             v-model="phonenumber"
             type="text"/>
 
@@ -100,7 +100,7 @@
           <input
             class="mb-3"
             style=""
-            placeholder="Intern"
+            placeholder="Please enter your position"
             v-model="position"
             type="text"/>
 
@@ -140,6 +140,13 @@ export default {
     }
   },
   methods: {
+    removeSpace(){
+      this.fullname = this.fullname.trim()
+      this.password = this.password.trim()
+      this.email = this.email.trim()
+      this.phonenumber = this.phonenumber.replace(/\s/g, '')
+      this.position = this.position.trim()
+    },
     removeAscent (str) {
       if (str === null || str === undefined) return str;
         str = str.toLowerCase();
@@ -154,23 +161,15 @@ export default {
     },    
     checkErrorFullname(){
       var regexName = /^[a-zA-Z ]{2,}$/g;
-      if(!regexName.test(this.removeAscent(this.fullname))){
+      if(!regexName.test(this.removeAscent(this.fullname.trim()))){
         return true // Có lỗi 
       }else{
         return false // Không có lỗi
       }
     },
-    checkErrorUsername(){
-      var regexName = /^[a-zA-Z0-9_]{4,}[a-zA-Z]+[0-9]*$/ // a-z, gồm chữ số, có dấu gạch dưới, nhưng không được để cuối cùng, ít nhât 5 ký tự
-      if (!regexName.test(this.username)){
-        return true
-      }else{
-        return false
-      }
-    },
     checkErrorPassword(){
-      var regexName = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/ // Ít nhất 6 ký tự, có thể có ký tự đặc biệt
-      if (!regexName.test(this.password)){
+      var regexName = /^.{6,}$/ // Ít nhất 6 ký tự
+      if (!regexName.test(this.password.trim())){
         return true
       }else{
         return false
@@ -178,7 +177,7 @@ export default {
     },
     checkErrorEmail(){
       var regexName = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/ // Ít nhất 6 ký tự, có thể có ký tự đặc biệt
-      if (!regexName.test(this.email)){
+      if (!regexName.test(this.email.trim())){
         return true
       }else{
         return false
@@ -186,7 +185,7 @@ export default {
     },
     checkErrorPhonenumber(){
       var regexName = /^[0-9]{8,11}$/;
-      if(!regexName.test(this.removeAscent(this.phonenumber))){
+      if(!regexName.test(this.removeAscent(this.phonenumber.replace(/\s/g, '')))){
         return true // Có lỗi 
       }else{
         return false // Không có lỗi
@@ -194,7 +193,7 @@ export default {
     },
     checkErrorPosition(){
       var regexName = /^[a-zA-Z ]{2,}$/g;
-      if(!regexName.test(this.removeAscent(this.position))){
+      if(!regexName.test(this.removeAscent(this.position.trim()))){
         return true // Có lỗi 
       }else{
         return false // Không có lỗi
@@ -202,7 +201,6 @@ export default {
     },
     checkErrorInput(){
       if (this.checkErrorFullname() == false && 
-          this.checkErrorUsername() == false && 
           this.checkErrorPassword() == false && 
           this.checkErrorEmail() == false &&  
           this.checkErrorPhonenumber() == false && 
@@ -220,21 +218,36 @@ export default {
         this.position = this.admin.position;
     },
     success_change(){
+        this.removeSpace()
         if (this.checkErrorInput() == false){
-        this.admin.fullname = this.fullname
-        this.admin.password = this.password
-        this.admin.email = this.email
-        this.admin.phonenumber = this.phonenumber
-        this.admin.position = this.position
-        axios
-            .put(this.url +'admin/' + this.admin.username, this.admin)
-            .then((response)=>{
-                alert("Chỉnh sửa thành công")
-                this.flagChange = false
-            })
-            .catch(error => alert(error))
+          this.admin.fullname = this.fullname
+          this.admin.password = this.password
+          this.admin.email = this.email
+          this.admin.phonenumber = this.phonenumber
+          this.admin.position = this.position
+          axios
+              .put(this.url +'admin/' + this.admin.username, this.admin)
+              .then((response)=>{
+                  alert("Chỉnh sửa thành công")
+                  this.flagChange = false
+              })
+              .catch(error => alert("Email đã được đăng ký."))
         }else{
-            alert("Bạn đã nhập sai yêu cầu! Mời nhập lại.")
+          if (this.checkErrorFullname() == true){
+            alert("Bạn nhập không đúng định dạng fullname")
+          }
+          if (this.checkErrorPassword() == true){
+            alert("Bạn nhập không đúng định dạng password")
+          }
+          if (this.checkErrorEmail() == true){
+            alert("Bạn nhập không đúng định dạng email")
+          }
+          if (this.checkErrorPhonenumber() == true){
+            alert("Bạn nhập không đúng định dạng phonenumber")
+          }
+          if (this.checkErrorPosition() == true){
+            alert("Bạn nhập không đúng định dạng position")
+          }
         }
     },
     back(){
